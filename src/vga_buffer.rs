@@ -5,10 +5,10 @@ use volatile::Volatile;
 
 /*
     VGA Text Mode has 2-byte characters.
-    0-7: ASCII
-    8-11: Fore Color
-    12-14: Back Color
-    15: Blink
+    ---=---= 0-7: ASCII
+            ---= 8-11: Fore Color
+                --- 12-14: Back Color
+                   = 15: Blink
 */
 
 #[allow(dead_code)]
