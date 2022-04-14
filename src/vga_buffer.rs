@@ -88,6 +88,7 @@ impl Writer {
         self.column_position += 1;
     }
     fn new_line(&mut self) {
+        self.column_position = 0;
         if self.row_position + 1 >= BUFFER_HEIGHT {
             for row in 1..BUFFER_HEIGHT {
                 for col in 0..BUFFER_WIDTH {
@@ -97,12 +98,11 @@ impl Writer {
             self.clear_row(BUFFER_HEIGHT);
         } else {
             self.row_position += 1;
-            self.column_position = 0;
         }
     }
     fn clear_row(&mut self, row: usize) {
         let space = ScreenChar { ascii_character: b' ', color_code: self.color_code };
-        for col in 0..BUFFER_WIDTH {
+        for col in 0..BUFFER_HEIGHT {
             self.buffer.chars[col][row].write(space);
         }
     }
@@ -139,4 +139,11 @@ macro_rules! println {
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
+}
+
+#[test_case]
+fn test_println_many() {
+    for _ in 0..200 {
+        print!("test_println_many output");
+    }
 }
