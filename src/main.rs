@@ -13,15 +13,14 @@ use x86_64::VirtAddr;
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
+    use rust_os::memory;
+    use x86_64::{structures::paging::Translate, VirtAddr};
+
     println!("Hello World{}", "!");
     rust_os::init();
-    use rust_os::memory::active_level_4_table;
-
-    use rust_os::memory::translate_addr;
-
-    use x86_64::structures::paging::PageTable;
-
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    // 追加：mapperを初期化
+    let mapper = unsafe { memory::init(phys_mem_offset) };
 
     let addresses = [
         // 恒等対応しているVGAバッファのページ
@@ -36,7 +35,8 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     for &address in &addresses {
         let virt = VirtAddr::new(address);
-        let phys = unsafe { translate_addr(virt, phys_mem_offset) };
+        // 追加：`mapper.translate_addr`メソッドを使う
+        let phys = mapper.translate_addr(virt);
         println!("{:?} -> {:?}", virt, phys);
     }
 
