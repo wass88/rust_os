@@ -24,20 +24,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     let mut frame_allocator =
         unsafe { rust_os::memory::BootInfoFrameAllocator::init(&boot_info.memory_map) };
 
-    // たぶん未使用のアドレスにVGAにマップする
-    let page = Page::containing_address(VirtAddr::new(0xdeadbeaf000));
-    memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
-
-    use rust_os::memory::translate_addr;
-
-    let virt = VirtAddr::new(0xdeadbeaf000);
-    let phys = unsafe { translate_addr(virt, phys_mem_offset) };
-    println!("Mapped {:?} -> {:?}", virt, phys);
-
-    // 新しいマッピングを使って、文字列`New!`を画面に書き出す
-    let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
-    unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e) };
-
     #[cfg(test)]
     test_main();
     rust_os::hlt_loop();
