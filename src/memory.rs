@@ -25,8 +25,10 @@ fn translate_addr_inner(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Opt
 
     let (level_4_page_frame, _) = Cr3::read();
     let table_indexes = [addr.p4_index(), addr.p3_index(), addr.p2_index(), addr.p1_index()];
+    crate::println!("  Indexes: {:?}", table_indexes);
     let mut frame = level_4_page_frame;
     for &index in &table_indexes {
+        crate::print!(" - {:?}", frame.start_address());
         let virt = physical_memory_offset + frame.start_address().as_u64();
         let table_ptr: *const PageTable = virt.as_ptr();
         let table = unsafe { &*table_ptr };
@@ -35,9 +37,10 @@ fn translate_addr_inner(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Opt
         frame = match entry.frame() {
             Ok(frame) => frame,
             Err(FrameError::FrameNotPresent) => return None,
-            Err(FrameError::HugeFrame) => panic!("[memory] huge pages not supported"),
+            Err(FrameError::HugeFrame) => panic!("huge pages not supported"),
         }
     }
+    crate::println!();
 
     Some(frame.start_address() + u64::from(addr.page_offset()))
 }
