@@ -27,11 +27,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     rust_os::allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap init failed");
 
-    loop {
-        use rust_os::print;
-        print!("-"); // new
-    }
-
     #[cfg(test)]
     test_main();
     rust_os::hlt_loop();
