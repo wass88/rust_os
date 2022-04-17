@@ -5,15 +5,16 @@
 #![reexport_test_harness_main = "test_main"]
 #![feature(abi_x86_interrupt)]
 
-use core::panic::PanicInfo;
-
-use x86_64::instructions::hlt;
+extern crate alloc;
 
 pub mod gdt;
 pub mod interrupts;
 pub mod memory;
 pub mod serial;
+pub mod task;
 pub mod vga_buffer;
+
+use core::panic::PanicInfo;
 
 pub trait Testable {
     fn run(&self) -> ();
