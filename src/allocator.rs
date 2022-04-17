@@ -8,6 +8,7 @@ use x86_64::{
 };
 
 pub mod bump;
+pub mod linked_list;
 
 pub struct Locked<A> {
     inner: spin::Mutex<A>,
@@ -67,5 +68,9 @@ pub fn init_heap(
     Ok(())
 }
 
+//#[global_allocator]
+//static ALLOCATOR: Locked<bump::BumpAllocator> = Locked::new(bump::BumpAllocator::new());
+
 #[global_allocator]
-static ALLOCATOR: Locked<bump::BumpAllocator> = Locked::new(bump::BumpAllocator::new());
+static ALLOCATOR: Locked<linked_list::LinkedListAllocator> =
+    Locked::new(linked_list::LinkedListAllocator::new());
