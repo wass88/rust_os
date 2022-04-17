@@ -8,6 +8,7 @@ use x86_64::{
 };
 
 pub mod bump;
+pub mod fixed_size_block;
 pub mod linked_list;
 
 pub struct Locked<A> {
@@ -68,9 +69,9 @@ pub fn init_heap(
     Ok(())
 }
 
-//#[global_allocator]
-//static ALLOCATOR: Locked<bump::BumpAllocator> = Locked::new(bump::BumpAllocator::new());
-
 #[global_allocator]
-static ALLOCATOR: Locked<linked_list::LinkedListAllocator> =
-    Locked::new(linked_list::LinkedListAllocator::new());
+//static ALLOCATOR: Locked<bump::BumpAllocator> = Locked::new(bump::BumpAllocator::new());
+//static ALLOCATOR: Locked<linked_list::LinkedListAllocator> =
+//    Locked::new(linked_list::LinkedListAllocator::new());
+static ALLOCATOR: Locked<fixed_size_block::FixedSizeBlockAllocator> =
+    Locked::new(fixed_size_block::FixedSizeBlockAllocator::new());
