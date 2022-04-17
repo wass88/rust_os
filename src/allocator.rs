@@ -42,8 +42,12 @@ pub fn init_heap(
         }
     }
 
+    unsafe { ALLOCATOR.lock().init(HEAP_START, HEAP_SIZE) }
+
     Ok(())
 }
 
+use linked_list_allocator::LockedHeap;
+
 #[global_allocator]
-static ALLOCATOR: Dummy = Dummy;
+static ALLOCATOR: LockedHeap = LockedHeap::empty();
