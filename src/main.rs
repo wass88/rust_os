@@ -27,8 +27,8 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     rust_os::allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap init failed");
 
-    use rust_os::task::{simple_executor::SimpleExecutor, Task};
-    let mut executor = SimpleExecutor::new();
+    use rust_os::task::{executor::Executor, Task};
+    let mut executor = Executor::new();
     executor.spawn(Task::new(example_task()));
     executor.spawn(Task::new(rust_os::task::keyboard::print_keypresses()));
     executor.run();
